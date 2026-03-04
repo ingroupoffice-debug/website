@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { 
   Menu, X, ChevronLeft, ChevronRight, Building2, Globe, 
   BarChart3, Phone, Mail, MapPin, Accessibility, 
-  Award, Users2, Info, Instagram, Facebook, MessageCircle, ExternalLink
+  Award, Users2, Info, Instagram, Facebook, MessageCircle, ExternalLink,
+  BookOpen, PlayCircle
 } from 'lucide-react';
 
 export default function App() {
   // --- States ---
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
-  const [currentView, setCurrentView] = useState('home');
+  const [currentView, setCurrentView] = useState('home'); // 'home' or 'blog'
   const [showCookieBanner, setShowCookieBanner] = useState(true);
   const [showAccessMenu, setShowAccessMenu] = useState(false);
   
@@ -33,8 +34,13 @@ export default function App() {
     facebook: "https://www.facebook.com/share/1H7vJsvEg3/?mibextid=wwXIfr",
     bio: "בן 30 נשוי ואב ל-2. יזם ומשקיע נדל״ן עם ניסיון של יותר מ-10 שנים בענף. שירת כקצין לוחם במשמר הגבול, שירות שהקנה לו תכונות מנהיגות, משמעת ואחריות שבאות לידי ביטוי בעשייתו הנדלנ״ית. במקביל לשירותו הצבאי, נווה ביצע עסקאות יזמיות מורכבות בתחום הבניה והקרקעות והיום מוביל חברות נדל״ן שמתמחות בהשקעות מתוחכמות בעולם הנדל״ן, ליווי משקיעים שמשלבות ניסיון מעשי בשטח, חשיבה אסטרטגית יוצאת דופן ומחויבות בלתי מתפשרת להצלחת הלקוחות שלו. הוא ידוע ביכולת לזיהוי הזדמנויות וניהול מו״מ, תוך יצירת ערך מקסימלי עבור קהילת המשקיעים שלו.",
     testimonials: [
-      { id: 1, name: "משקיע בקהילה", role: "עסקת יד שניה", text: "הליווי של נווה נתן לנו שקט נפשי וביטחון בכל שלב בדרך.", videoId: "dQw4w9WgXcQ" },
-      { id: 2, name: "שותף אסטרטגי", role: "השקעת קרקע", text: "יכולת זיהוי ההזדמנויות של אינגרופ היא פשוט יוצאת דופן.", videoId: "dQw4w9WgXcQ" }
+      { id: 1, name: "משקיע בקהילה", role: "עסקת יד שניה", text: "הליווי של נווה נתן לנו שקט נפשי וביטחון בכל שלב בדרך. זיהוי ההזדמנות היה מדויק.", videoId: "dQw4w9WgXcQ" },
+      { id: 2, name: "שותף אסטרטגי", role: "השקעת קרקע", text: "יכולת זיהוי ההזדמנויות של אינגרופ היא פשוט יוצאת דופן. מומלץ בחום לכל משקיע רציני.", videoId: "dQw4w9WgXcQ" }
+    ],
+    articles: [
+      { id: 1, title: "עסקאות מתחת לרדאר: איך מוצאים הזדמנויות לפני כולם?", excerpt: "הסודות של משקיעי הנדל\"ן המתוחכמים באיתור נכסים שטרם הגיעו לשוק הפתוח.", date: "04.03.2024" },
+      { id: 2, title: "ניהול מו\"מ בנדל\"ן: להשיג את המקסימום מהעסקה שלך", excerpt: "כלים פרקטיים לניהול משא ומתן קשוח ויצירת ערך כבר בשלב הרכישה.", date: "28.02.2024" },
+      { id: 3, title: "נדל\"ן בארץ או בחו\"ל? אסטרטגיית פיזור סיכונים חכמה", excerpt: "ניתוח מעמיק של שוק ההשקעות הגלובלי מול המקומי ואיך לשלב ביניהם בצורה נכונה.", date: "20.02.2024" }
     ]
   };
 
@@ -47,6 +53,25 @@ export default function App() {
 
   const nextTestimonial = () => setActiveTestimonial((prev) => (prev + 1) % businessDetails.testimonials.length);
   const prevTestimonial = () => setActiveTestimonial((prev) => (prev - 1 + businessDetails.testimonials.length) % businessDetails.testimonials.length);
+
+  // פונקציית ניווט חכמה
+  const navigateTo = (view, sectionId = null) => {
+    setCurrentView(view);
+    setIsMobileMenuOpen(false);
+    if (sectionId) {
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          window.scrollTo({
+            top: element.offsetTop - 80,
+            behavior: 'smooth'
+          });
+        }
+      }, 100);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   return (
     <div 
@@ -64,7 +89,6 @@ export default function App() {
           .gold-gradient { background: linear-gradient(135deg, #D4AF37 0%, #F3D568 100%); }
           .text-gold { color: #D4AF37; }
           
-          /* אנימציית כניסה חלקה לטקסט */
           .fade-up {
             animation: fadeUp 1s ease-out forwards;
           }
@@ -80,15 +104,15 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-20 items-center">
             {/* Logo on the Right (RTL) */}
-            <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => setCurrentView('home')}>
+            <div className="flex-shrink-0 flex items-center cursor-pointer" onClick={() => navigateTo('home')}>
               <img src="Asset 34-8.png" alt="לוגו אינגרופ" className="h-12 md:h-14 object-contain" />
             </div>
 
-            {/* Nav links in center/left */}
+            {/* Nav links in center */}
             <div className="hidden md:flex items-center space-x-8 space-x-reverse">
-              <a href="#about" className="text-gray-300 hover:text-gold transition font-bold">אודות</a>
-              <a href="#blog" className="text-gray-300 hover:text-gold transition font-bold">מאמרים</a>
-              <a href="#testimonials" className="text-gray-300 hover:text-gold transition font-bold">עדויות</a>
+              <button onClick={() => navigateTo('home', 'about')} className="text-gray-300 hover:text-gold transition font-bold">אודות</button>
+              <button onClick={() => navigateTo('blog')} className="text-gray-300 hover:text-gold transition font-bold">מאמרים</button>
+              <button onClick={() => navigateTo('home', 'testimonials')} className="text-gray-300 hover:text-gold transition font-bold">עדויות</button>
               <a href={businessDetails.whatsappDirect} target="_blank" className="gold-gradient text-blue-900 px-6 py-2 rounded-full font-black shadow-lg hover:scale-105 transition">
                 צור קשר
               </a>
@@ -101,106 +125,145 @@ export default function App() {
             </div>
           </div>
         </div>
+
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-[#0A192F] border-t border-gold/20 p-4 space-y-4">
+            <button onClick={() => navigateTo('home', 'about')} className="block w-full text-right text-white py-2 font-bold">אודות</button>
+            <button onClick={() => navigateTo('blog')} className="block w-full text-right text-white py-2 font-bold">מאמרים</button>
+            <button onClick={() => navigateTo('home', 'testimonials')} className="block w-full text-right text-white py-2 font-bold">עדויות</button>
+            <a href={businessDetails.whatsappDirect} target="_blank" className="block text-center gold-gradient text-blue-900 py-3 rounded-full font-black">צור קשר</a>
+          </div>
+        )}
       </nav>
 
-      {/* Hero Section with Video Background */}
-      <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          {/* רקע וידאו מונפש - רחפן לילה */}
-          <video 
-            autoPlay 
-            loop 
-            muted 
-            playsInline 
-            className="w-full h-full object-cover"
-          >
-            <source src="https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-city-at-night-11030-large.mp4" type="video/mp4" />
-          </video>
-          {/* Overlay כהה לניגודיות טקסט */}
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
-        </div>
-        
-        <div className="relative z-10 text-center px-4 max-w-4xl fade-up">
-          <div className="inline-block px-4 py-1 border border-gold text-gold text-xs font-bold uppercase tracking-widest mb-6 rounded">IN GROUP REAL ESTATE</div>
-          <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight">
-            להשקיע <span className="text-gold">חכם</span><br />
-            להרוויח <span className="text-gold">בטוח</span>
-          </h1>
-          <p className="text-xl text-gray-200 mb-10 font-light leading-relaxed max-w-2xl mx-auto">
-            מובילים את שוק השקעות הנדל"ן המתוחכמות בארץ ובעולם.<br />
-            חשיבה אסטרטגית, ניסיון מעשי ומחויבות בלתי מתפשרת.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <a href={businessDetails.whatsappCommunity} target="_blank" className="gold-gradient px-10 py-4 rounded-full text-blue-900 font-bold text-lg shadow-2xl flex items-center justify-center gap-2 hover:brightness-110 hover:scale-105 transition duration-300">
-              <MessageCircle size={20} />
-              קהילת עסקאות מתחת לרדאר
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* CEO Section - נווה נתן */}
-      <section id="about" className="py-24 bg-white relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center gap-16">
-            <div className="md:w-2/5">
-              <div className="relative group">
-                <div className="absolute -top-4 -right-4 w-full h-full border-2 border-gold rounded-2xl z-0 transition-all group-hover:top-0 group-hover:right-0"></div>
-                <img 
-                  src="תמונת פרופיל עדכנית דצמבר 25.jpg" 
-                  className="relative z-10 rounded-2xl shadow-2xl w-full object-cover" 
-                  alt={businessDetails.ceoName}
-                />
-              </div>
+      {currentView === 'home' ? (
+        <main>
+          {/* Hero Section with Video Background */}
+          <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
+            <div className="absolute inset-0 z-0">
+              <video 
+                autoPlay 
+                loop 
+                muted 
+                playsInline 
+                className="w-full h-full object-cover"
+              >
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-city-at-night-11030-large.mp4" type="video/mp4" />
+              </video>
+              <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
             </div>
-            <div className="md:w-3/5">
-              <h2 className="text-gold text-sm font-bold tracking-[0.2em] mb-4 uppercase">Leadership & Vision</h2>
-              <h3 className="text-4xl font-black mb-2" style={{ color: colors.darkBlue }}>{businessDetails.ceoName}</h3>
-              <p className="text-xl font-bold mb-6 text-gold">{businessDetails.ceoTitle}</p>
-              <p className="text-lg leading-relaxed text-gray-600 mb-8 text-justify">
-                {businessDetails.bio}
+            
+            <div className="relative z-10 text-center px-4 max-w-4xl fade-up">
+              <div className="inline-block px-4 py-1 border border-gold text-gold text-xs font-bold uppercase tracking-widest mb-6 rounded">IN GROUP REAL ESTATE</div>
+              <h1 className="text-5xl md:text-7xl font-black text-white mb-6 leading-tight">
+                להשקיע <span className="text-gold">חכם</span><br />
+                להרוויח <span className="text-gold">בטוח</span>
+              </h1>
+              <p className="text-xl text-gray-200 mb-10 font-light leading-relaxed max-w-2xl mx-auto">
+                מובילים את שוק השקעות הנדל"ן המתוחכמות בארץ ובעולם.<br />
+                חשיבה אסטרטגית, ניסיון מעשי ומחויבות בלתי מתפשרת.
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 border-r-4 border-gold">
-                  <Award className="text-gold" size={32} />
-                  <span className="font-bold text-gray-700 uppercase text-sm">10+ שנות ניסיון מעשי</span>
-                </div>
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 border-r-4 border-gold">
-                  <Users2 className="text-gold" size={32} />
-                  <span className="font-bold text-gray-700 uppercase text-sm">ניהול קהילת משקיעים</span>
-                </div>
+              <div className="flex flex-col sm:flex-row justify-center gap-4">
+                <a href={businessDetails.whatsappCommunity} target="_blank" className="gold-gradient px-10 py-4 rounded-full text-blue-900 font-bold text-lg shadow-2xl flex items-center justify-center gap-2 hover:brightness-110 hover:scale-105 transition duration-300">
+                  <MessageCircle size={20} />
+                  קהילת עסקאות מתחת לרדאר
+                </a>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      {/* YouTube Testimonials */}
-      <section id="testimonials" className="py-24 bg-gray-50">
-        <div className="max-w-5xl mx-auto px-4 text-center">
-          <h2 className="text-4xl font-black mb-4">עדויות מהשטח</h2>
-          <p className="text-gray-500 mb-16">המשקיעים שלנו מספרים על הדרך המשותפת</p>
-          <div className="relative">
-            <div className="aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl relative mb-10">
-              <iframe
-                className="w-full h-full"
-                src={`https://www.youtube.com/embed/${businessDetails.testimonials[activeTestimonial].videoId}`}
-                title="עדויות לקוחות"
-                frameBorder="0"
-                allowFullScreen
-              ></iframe>
-            </div>
-            <div className="flex justify-center items-center gap-8">
-              <button onClick={prevTestimonial} className="p-3 rounded-full border border-gold text-gold hover:bg-gold hover:text-white transition"><ChevronRight /></button>
-              <div className="min-w-[200px]">
-                <h4 className="font-bold text-xl">{businessDetails.testimonials[activeTestimonial].name}</h4>
-                <p className="text-gold font-medium">{businessDetails.testimonials[activeTestimonial].role}</p>
+          {/* CEO Section - נווה נתן */}
+          <section id="about" className="py-24 bg-white relative overflow-hidden">
+            <div className="max-w-7xl mx-auto px-4">
+              <div className="flex flex-col md:flex-row items-center gap-16">
+                <div className="md:w-2/5">
+                  <div className="relative group">
+                    <div className="absolute -top-4 -right-4 w-full h-full border-2 border-gold rounded-2xl z-0 transition-all group-hover:top-0 group-hover:right-0"></div>
+                    <img 
+                      src="תמונת פרופיל עדכנית דצמבר 25.jpg" 
+                      className="relative z-10 rounded-2xl shadow-2xl w-full object-cover" 
+                      alt={businessDetails.ceoName}
+                    />
+                  </div>
+                </div>
+                <div className="md:w-3/5">
+                  <h2 className="text-gold text-sm font-bold tracking-[0.2em] mb-4 uppercase">Leadership & Vision</h2>
+                  <h3 className="text-4xl font-black mb-2" style={{ color: colors.darkBlue }}>{businessDetails.ceoName}</h3>
+                  <p className="text-xl font-bold mb-6 text-gold">{businessDetails.ceoTitle}</p>
+                  <p className="text-lg leading-relaxed text-gray-600 mb-8 text-justify">
+                    {businessDetails.bio}
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 border-r-4 border-gold">
+                      <Award className="text-gold" size={32} />
+                      <span className="font-bold text-gray-700 uppercase text-sm">10+ שנות ניסיון מעשי</span>
+                    </div>
+                    <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 border-r-4 border-gold">
+                      <Users2 className="text-gold" size={32} />
+                      <span className="font-bold text-gray-700 uppercase text-sm">ניהול קהילת משקיעים</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <button onClick={nextTestimonial} className="p-3 rounded-full border border-gold text-gold hover:bg-gold hover:text-white transition"><ChevronLeft /></button>
             </div>
+          </section>
+
+          {/* YouTube Testimonials */}
+          <section id="testimonials" className="py-24 bg-gray-50">
+            <div className="max-w-5xl mx-auto px-4 text-center">
+              <h2 className="text-4xl font-black mb-4">עדויות מהשטח</h2>
+              <p className="text-gray-500 mb-16">המשקיעים שלנו מספרים על הדרך המשותפת</p>
+              <div className="relative">
+                <div className="aspect-video bg-black rounded-3xl overflow-hidden shadow-2xl relative mb-10">
+                  <iframe
+                    className="w-full h-full"
+                    src={`https://www.youtube.com/embed/${businessDetails.testimonials[activeTestimonial].videoId}`}
+                    title="עדויות לקוחות"
+                    frameBorder="0"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+                <div className="flex justify-center items-center gap-8">
+                  <button onClick={prevTestimonial} className="p-3 rounded-full border border-gold text-gold hover:bg-gold hover:text-white transition"><ChevronRight /></button>
+                  <div className="min-w-[200px]">
+                    <h4 className="font-bold text-xl">{businessDetails.testimonials[activeTestimonial].name}</h4>
+                    <p className="text-gold font-medium">{businessDetails.testimonials[activeTestimonial].role}</p>
+                  </div>
+                  <button onClick={nextTestimonial} className="p-3 rounded-full border border-gold text-gold hover:bg-gold hover:text-white transition"><ChevronLeft /></button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      ) : (
+        /* מרכז ידע / בלוג נדל"ן */
+        <section className="py-24 max-w-6xl mx-auto px-4 fade-up">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+            <div>
+              <h2 className="text-4xl font-black mb-4">מרכז הידע של אינגרופ</h2>
+              <p className="text-gray-500 max-w-2xl">כלים, תובנות וניתוחי שוק שיעזרו לכם לקבל החלטות השקעה מושכלות ומבוססות נתונים.</p>
+            </div>
+            <button onClick={() => navigateTo('home')} className="text-sm font-bold text-gold hover:underline flex items-center gap-2">
+              <ChevronRight size={16} /> חזרה לדף הבית
+            </button>
           </div>
-        </div>
-      </section>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {businessDetails.articles.map(article => (
+              <article key={article.id} className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-xl transition-all cursor-pointer group">
+                <div className="flex items-center gap-2 text-gold text-xs font-bold uppercase mb-4">
+                  <BookOpen size={14} /> {article.date}
+                </div>
+                <h3 className="text-2xl font-bold mb-4 group-hover:text-gold transition-colors leading-tight">{article.title}</h3>
+                <p className="text-gray-600 mb-8 text-sm leading-relaxed">{article.excerpt}</p>
+                <div className="flex items-center font-black text-blue-900 text-sm">
+                  קרא עוד <ChevronLeft size={16} className="mr-2" />
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Cookie Banner */}
       {showCookieBanner && (
@@ -247,7 +310,7 @@ export default function App() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-16 mb-16">
             <div>
               <img src="Asset 34-8.png" alt="לוגו אינגרופ" className="h-12 mb-6" />
-              <p className="text-gray-400 leading-relaxed">מובילים להשקעות נדל"ן מבוססות נתונים, אסטרטגיה וביטחון הון מלא.</p>
+              <p className="text-gray-400 leading-relaxed font-light">מובילים להשקעות נדל"ן מבוססות נתונים, אסטרטגיה וביטחון הון מלא. הדרך שלכם לחופש כלכלי מתחילה כאן.</p>
               <div className="flex gap-4 mt-8">
                 <a href={businessDetails.instagram} target="_blank" className="p-2 rounded-full bg-white/5 hover:bg-gold hover:text-blue-900 transition"><Instagram size={20} /></a>
                 <a href={businessDetails.facebook} target="_blank" className="p-2 rounded-full bg-white/5 hover:bg-gold hover:text-blue-900 transition"><Facebook size={20} /></a>
@@ -255,7 +318,7 @@ export default function App() {
               </div>
             </div>
             <div>
-              <h4 className="font-bold mb-6 text-gold text-lg">יצירת קשר</h4>
+              <h4 className="font-bold mb-6 text-gold text-lg border-b border-gold/20 pb-2 w-fit">יצירת קשר</h4>
               <div className="space-y-4 text-gray-400">
                 <div className="flex items-center gap-3"><Phone size={18} className="text-gold" /> {businessDetails.phone}</div>
                 <div className="flex items-center gap-3"><Mail size={18} className="text-gold" /> {businessDetails.email}</div>
@@ -263,12 +326,14 @@ export default function App() {
               </div>
             </div>
             <div>
-              <h4 className="font-bold mb-6 text-gold text-lg">ניווט</h4>
+              <h4 className="font-bold mb-6 text-gold text-lg border-b border-gold/20 pb-2 w-fit">ניווט מהיר</h4>
               <ul className="space-y-4 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white transition">דף הבית</a></li>
-                <li><a href="#about" className="hover:text-white transition">אודות המנכ"ל</a></li>
-                <li><a href="#testimonials" className="hover:text-white transition">עדויות</a></li>
-                <li><a href={businessDetails.whatsappCommunity} className="hover:text-white transition font-bold">קהילת הווטסאפ</a></li>
+                <li><button onClick={() => navigateTo('home')} className="hover:text-white transition">דף הבית</button></li>
+                <li><button onClick={() => navigateTo('home', 'about')} className="hover:text-white transition">אודות המנכ"ל</button></li>
+                <li><button onClick={() => navigateTo('blog')} className="hover:text-white transition">מרכז הידע (מאמרים)</button></li>
+                <li><a href={businessDetails.whatsappCommunity} target="_blank" className="hover:text-white transition font-bold text-gold flex items-center gap-2">
+                   <ExternalLink size={14} /> קהילת הווטסאפ
+                </a></li>
               </ul>
             </div>
           </div>
